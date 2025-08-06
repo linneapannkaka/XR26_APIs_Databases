@@ -33,12 +33,15 @@ namespace WeatherApp.Config
         private static void LoadConfiguration()
         {
             string configPath = Path.Combine(Application.streamingAssetsPath, "config.json");
+            Debug.Log($"Looking for config at: {configPath}");
             
             if (File.Exists(configPath))
             {
                 try
                 {
                     string jsonContent = File.ReadAllText(configPath);
+                    Debug.Log($"Config file content: {jsonContent}");
+
                     var config = JsonUtility.FromJson<ConfigData>(jsonContent);
                     _apiKey = config.openWeatherMapApiKey;
                     _isLoaded = true;

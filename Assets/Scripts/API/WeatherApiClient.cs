@@ -38,13 +38,37 @@ namespace WeatherApp.Services
                 Debug.LogError("API key not configured. Please set up your config.json file in StreamingAssets folder.");
                 return null;
             }
-            
+
             // TODO: Build the complete URL with city and API key
-            string url = $"";
-            
+            string url = $"{baseUrl}?q={UnityWebRequest.EscapeURL(city)}&appid={ApiConfig.OpenWeatherMapApiKey}";
+
+
             // TODO: Create UnityWebRequest and use modern async pattern
             using (UnityWebRequest request = UnityWebRequest.Get(url))
             {
+                var operation = request.SendWebRequest();
+
+                while (!operation.isDone)
+                    await Task.Yield();
+
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError($"Error fetching weather data: {request.error}");
+                    return null;
+                }
+
+                try
+                {
+                    var json = request.downloadHandler.text;
+                    var weatherData = JsonConvert.DeserializeObject<WeatherData>(json);
+                    return weatherData;
+                }
+
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Failed to parse weather data: {ex.Message}");
+                    return null;
+                }
                 // TODO: Use async/await, send the request and wait for response
                 
                 // TODO: Implement proper error handling for different result types
@@ -53,8 +77,6 @@ namespace WeatherApp.Services
                 // TODO: Parse JSON response using Newtonsoft.Json
                 
                 // TODO: Return the parsed WeatherData object
-                
-                return null; // Placeholder - students will replace this
             }
         }
         
