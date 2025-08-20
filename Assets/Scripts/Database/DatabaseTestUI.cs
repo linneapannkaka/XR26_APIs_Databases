@@ -6,7 +6,9 @@ using Databases;
 
 namespace Databases.UI
 {
-    /// Simple UI controller for testing database functionality
+    // Simple UI controller for testing database functionality
+    // HAndles button clicks and displays database results
+
     public class DatabaseTestUI : MonoBehaviour
     {
         [Header("UI References")]
@@ -22,8 +24,10 @@ namespace Databases.UI
             SetupUI();
         }
 
+        // Sets up button events and default input values
         private void SetupUI()
         {
+            // Link button clicks to their methods
             // TODO: Students will connect these button events
             if (addHighScoreButton != null)
                 addHighScoreButton.onClick.AddListener(OnAddHighScore);
@@ -41,10 +45,12 @@ namespace Databases.UI
             if (scoreInput != null)
                 scoreInput.text = "1000";
 
+            // First message in menu thingy
             UpdateDisplay("Database Test UI Ready\nClick buttons to test database operations");
         }
 
-        /// TODO: Students will implement this method
+        // TODO: Students will implement this method
+        // Called when "Add High Score" button is clicked
         private void OnAddHighScore()
         {
             try
@@ -55,6 +61,7 @@ namespace Databases.UI
                 if (int.TryParse(scoreText, out int score))
                 {
                     // TODO: Use GameDataManager to add the high score
+                    GameDataManager.Instance.AddHighScore(playerName, score);
 
                     UpdateDisplay($"High score added: {playerName} - {score} points");
 
@@ -80,7 +87,7 @@ namespace Databases.UI
             {
                 // TODO: Use GameDataManager to get high scores
 
-                var scores = new List<HighScore>(); // Placeholder - students will replace this
+                var scores = GameDataManager.Instance.GetTopHighScores();
 
                 if (scores.Count == 0)
                 {
@@ -109,6 +116,7 @@ namespace Databases.UI
             try
             {
                 // TODO: Use GameDataManager to clear all high scores
+                GameDataManager.Instance.ClearAllHighScores();
 
                 UpdateDisplay("All high scores cleared from database");
             }
